@@ -78,8 +78,7 @@
 
         <!-- 2. EMBEDDED DASHBOARD (Standardmäßig versteckt) -->
         <div id="dashboard-container" class="w-full h-[85vh] bg-stone-900 rounded-2xl border border-stone-800 overflow-hidden shadow-2xl hidden">
-            <!-- HIER DEINE LOOKER STUDIO EMBED-URL EINFÜGEN -->
-            <iframe width="600" height="450" src="https://datastudio.google.com/embed/reporting/76fe5ed8-1a55-47cc-b2b8-7d41a47b5fd8/page/xFc5F" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>>
+            <iframe id="looker-frame" src="" class="w-full h-full border-0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
         </div>
 
     </main>
@@ -91,13 +90,11 @@
 
     <!-- LOGIK SKRIPT -->
     <script>
-        // Deine bestehende GAS API-URL aus der App Config
         const API_URL = "https://script.google.com/macros/s/AKfycbz-J5f6pzUF5xRN4CEDU1kNX6bbFf-y922-hTZLrjxiJ_QmgY4WYuSg0IabruTuhprh/exec";
         
-        // DEINE LOOKER STUDIO EMBED-URL HIER EINTRAGEN:
-        const LOOKER_EMBED_URL = "https://lookerstudio.google.com/embed/reporting/DEINE_REPORT_ID/page/DEINE_SEITEN_ID";
+        // DEINE DEDIZIERTE LOOKER STUDIO EMBED-URL:
+        const LOOKER_EMBED_URL = "https://datastudio.google.com/embed/reporting/76fe5ed8-1a55-47cc-b2b8-7d41a47b5fd8/page/xFc5F";
 
-        // JSONP-Bridge für die Authentifizierung
         function apiRequest(action, payload = {}) {
             return new Promise((resolve) => {
                 const callbackName = "gas_cb_" + Math.random().toString(36).substring(2, 11);
@@ -113,7 +110,6 @@
             });
         }
 
-        // Spielerliste beim Laden abrufen
         async function initStatsPage() {
             const res = await apiRequest('getInitialAppData');
             if (res && res.success && res.spieler) {
@@ -123,7 +119,6 @@
             }
         }
 
-        // Entriegeln-Prozess
         async function unlockStats() {
             const spielerId = document.getElementById('stats-user-select').value;
             const pin = document.getElementById('stats-pin-input').value;
@@ -140,17 +135,29 @@
             btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Prüfe...`;
             err.classList.add('hidden');
 
+            // 1. PIN verifizieren
             const res = await apiRequest('verifyPlayerPin', { spielerId: spielerId, pin: pin.trim() });
 
             if (res && res.success) {
-                // PIN korrekt -> Auth-Box ausblenden, Dashboard laden & anzeigen
-                document.getElementById('stats-auth-box').classList.add('hidden');
-                document.getElementById('looker-frame').src = LOOKER_EMBED_URL;
-                document.getElementById('dashboard-container').classList.remove('hidden');
+                // 2. Sperr-Status vom Server abfragen
+                const lockRes = await apiRequest('getVaultLockStatus');
                 
-                const badge = document.getElementById('user-badge');
-                badge.innerText = `Eingeloggt als Vault-Member`;
-                badge.classList.remove('hidden');
+                if (lockRes && lockRes.isUnlocked) {
+                    // FREIGEGEBEN -> Dashboard anzeigen
+                    document.getElementById('stats-auth-box').classList.add('hidden');
+                    document.getElementById('looker-frame').src = LOOKER_EMBED_URL;
+                    document.getElementById('dashboard-container').classList.remove('hidden');
+                    
+                    const badge = document.getElementById('user-badge');
+                    badge.innerText = `Eingeloggt als Vault-Member`;
+                    badge.classList.remove('hidden');
+                } else {
+                    // NOCH GESPERRT -> Hinweistext für die Jungs
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fas fa-key"></i> Vault Entriegeln`;
+                    err.innerText = "🔒 Die Auswertung ist noch unter Verschluss! Die Ergebnisse werden erst nach der Runde auf der Terrasse freigeschaltet. 🍻";
+                    err.classList.remove('hidden');
+                }
             } else {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fas fa-key"></i> Vault Entriegeln`;

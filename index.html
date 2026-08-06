@@ -1,18 +1,151 @@
-<!-- Header / Navigation -->
-<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <img src="LIE_Logo.png" alt="LOCH IHN EIN Logo" class="h-16 w-auto object-contain">
-            <span class="text-2xl font-black tracking-tight text-golf-900">LOCH IHN EIN</span>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOCH IHN EIN – Golf & Spielgruppe</title>
+    <!-- Tailwind CSS per CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        golf: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased selection:bg-golf-600 selection:text-white">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="LIE_Logo.png" alt="LOCH IHN EIN Logo" class="h-16 w-auto object-contain">
+                <span class="text-2xl font-black tracking-tight text-golf-900">LOCH IHN EIN</span>
+            </div>
+            
+            <!-- Rechte Navigation mit Stats & Login -->
+            <div class="flex items-center gap-4">
+                <a href="stats.html" 
+                   class="inline-flex items-center gap-2 bg-golf-100 text-golf-900 hover:bg-golf-600 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 shadow-2xs">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Stats & Vault</span>
+                </a>
+
+                <a href="https://app.lochihnein.de" 
+                   class="text-sm font-medium text-stone-500 hover:text-golf-800 transition duration-200 flex items-center gap-1.5">
+                   <span>Mitglieder-Login</span>
+                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </div>
         </div>
-        
-        <!-- Rechte Navigation mit Login & Stats -->
-        <div class="flex items-center gap-4">
-            <a href="stats.html" 
-               class="inline-flex items-center gap-2 bg-golf-100 text-golf-900 hover:bg-golf-600 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 shadow-2xs">
-                <i class="fas fa-chart-line"></i>
-                <span>Stats & Vault</span>
-            </a>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-b from-golf-900 to-golf-800 text-white py-24 sm:py-32 overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <span class="inline-block bg-golf-700/80 text-golf-100 text-sm font-medium px-4 py-1.5 rounded-full mb-6 border border-golf-600">
+                Herren-Spielgruppe im GC Bremer Schweiz
+            </span>
+            <h1 class="text-4xl sm:text-6xl font-black tracking-tight mb-6 leading-tight">
+                12 Herren. 18 Löcher.<br><span class="text-golf-100">Eine Leidenschaft.</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-stone-200 max-w-2xl mx-auto leading-relaxed">
+                Seit über 20 Jahren schlagen wir gemeinsam im Golfclub Bremer Schweiz ab. Eine starke Gemeinschaft auf und neben dem Platz.
+            </p>
         </div>
-    </div>
-</header>
+    </section>
+
+    <!-- Über uns Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-stone-50 border border-stone-200 rounded-3xl p-8 sm:p-12 shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-golf-700 font-bold uppercase tracking-wider text-sm">Unsere Geschichte</span>
+                    <div class="h-px bg-stone-300 flex-1"></div>
+                </div>
+                <h2 class="text-3xl font-extrabold text-stone-900 mb-6">
+                    Seit über 20 Jahren ein starkes Team
+                </h2>
+                <div class="space-y-4 text-stone-700 leading-relaxed text-lg">
+                    <p>
+                        Was vor mehr als zwei Jahrzehnten mit drei golfbegeisterten Gründungsmitgliedern begann, ist heute eine fest zusammengewachsene Truppe von 12 Herren. Als private Freundesrunde im <a href="https://www.golfclub-bremerschweiz.de/" target="_blank" rel="noopener noreferrer" class="text-golf-700 font-semibold underline hover:text-golf-900">Golfclub Bremer Schweiz</a> teilen wir seit vielen Jahren die Leidenschaft für den Sport.
+                    </p>
+                    <p>
+                        Fast jeden Samstag schlagen wir auf den Bahnen unseres Heimatclubs zu unserer gemeinsamen Runde ab. Bei uns stehen der sportliche Ehrgeiz auf dem Grün und der Spaß am Spiel an erster Stelle.
+                    </p>
+                    <p>
+                        Doch unsere Gemeinschaft endet keineswegs am 18. Loch: Ob gemeinsame Golf-Urlaube, stimmungsvolle Weihnachtsfeiern oder sommerliche Grillabende – auch abseits des Platzes verbringen wir am liebsten Zeit miteinander, sehr gerne auch zusammen mit unseren Partnerinnen.
+                    </p>
+                    <p class="font-bold text-golf-900 pt-2">
+                        Freundschaft, Tradition und die Leidenschaft fürs Golfen – das ist LOCH IHN EIN.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-stone-100 border-t border-stone-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl font-black text-stone-900 mb-4">Was uns ausmacht</h2>
+                <p class="text-stone-600 text-lg">Tradition, Wettkampf und geselliges Beisammensein seit über zwei Jahrzehnten.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
+                    <div class="w-12 h-12 bg-golf-100 text-golf-700 rounded-xl flex items-center justify-center text-2xl mb-6">⛳</div>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Samstagsrunde</h3>
+                    <p class="text-stone-600 leading-relaxed">
+                        Jede Woche schlagen wir gemeinsam im GC Bremer Schweiz ab und ermitteln unsere Spieltag-Sieger.
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
+                    <div class="w-12 h-12 bg-golf-100 text-golf-700 rounded-xl flex items-center justify-center text-2xl mb-6">✈️</div>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Golf-Reisen</h3>
+                    <p class="text-stone-600 leading-relaxed">
+                        Regelmäßige Ausflüge und gemeinsame Trips auf die schönsten Golfplätze im In- und Ausland.
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
+                    <div class="w-12 h-12 bg-golf-100 text-golf-700 rounded-xl flex items-center justify-center text-2xl mb-6">🤝</div>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Gemeinschaft</h3>
+                    <p class="text-stone-600 leading-relaxed">
+                        Events, Sommerfeste und Feiern – die Freundschaft reicht weit über das 18. Grün hinaus.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-golf-900 text-golf-100 py-12 border-t border-golf-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <img src="LIE_Logo.png" alt="LOCH IHN EIN Logo" class="h-16 w-auto object-contain">
+                <span class="font-bold text-lg text-white">LOCH IHN EIN</span>
+            </div>
+            <div class="flex items-center gap-6 text-sm text-golf-100/70">
+                <p>&copy; <script>document.write(new Date().getFullYear())</script> LOCH IHN EIN.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
