@@ -1,3 +1,27 @@
+##### <index.html>:
+----------------------------------------------------------------------
+<!-- Header / Navigation -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <img src="LIE_Logo.png" alt="LOCH IHN EIN Logo" class="h-16 w-auto object-contain">
+            <span class="text-2xl font-black tracking-tight text-golf-900">LOCH IHN EIN</span>
+        </div>
+        
+        <!-- Rechte Navigation mit Login & Stats -->
+        <div class="flex items-center gap-4">
+            <a href="stats.html" 
+               class="inline-flex items-center gap-2 bg-golf-100 text-golf-900 hover:bg-golf-600 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 shadow-2xs">
+                <i class="fas fa-chart-line"></i>
+                <span>Stats & Vault</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+
+##### <stats.html>:
+----------------------------------------------------------------------
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -54,7 +78,8 @@
 
         <!-- 2. EMBEDDED DASHBOARD (Standardmäßig versteckt) -->
         <div id="dashboard-container" class="w-full h-[85vh] bg-stone-900 rounded-2xl border border-stone-800 overflow-hidden shadow-2xl hidden">
-            <iframe id="looker-frame" src="" class="w-full h-full border-0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+            <!-- HIER DEINE LOOKER STUDIO EMBED-URL EINFÜGEN -->
+            <iframe width="600" height="450" src="https://datastudio.google.com/embed/reporting/76fe5ed8-1a55-47cc-b2b8-7d41a47b5fd8/page/xFc5F" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>>
         </div>
 
     </main>
@@ -66,11 +91,13 @@
 
     <!-- LOGIK SKRIPT -->
     <script>
+        // Deine bestehende GAS API-URL aus der App Config
         const API_URL = "https://script.google.com/macros/s/AKfycbz-J5f6pzUF5xRN4CEDU1kNX6bbFf-y922-hTZLrjxiJ_QmgY4WYuSg0IabruTuhprh/exec";
         
-        // DEINE DEDIZIERTE LOOKER STUDIO EMBED-URL:
-        const LOOKER_EMBED_URL = "https://datastudio.google.com/embed/reporting/76fe5ed8-1a55-47cc-b2b8-7d41a47b5fd8/page/xFc5F";
+        // DEINE LOOKER STUDIO EMBED-URL HIER EINTRAGEN:
+        const LOOKER_EMBED_URL = "https://lookerstudio.google.com/embed/reporting/DEINE_REPORT_ID/page/DEINE_SEITEN_ID";
 
+        // JSONP-Bridge für die Authentifizierung
         function apiRequest(action, payload = {}) {
             return new Promise((resolve) => {
                 const callbackName = "gas_cb_" + Math.random().toString(36).substring(2, 11);
@@ -86,6 +113,7 @@
             });
         }
 
+        // Spielerliste beim Laden abrufen
         async function initStatsPage() {
             const res = await apiRequest('getInitialAppData');
             if (res && res.success && res.spieler) {
@@ -95,6 +123,7 @@
             }
         }
 
+        // Entriegeln-Prozess
         async function unlockStats() {
             const spielerId = document.getElementById('stats-user-select').value;
             const pin = document.getElementById('stats-pin-input').value;
@@ -114,6 +143,7 @@
             const res = await apiRequest('verifyPlayerPin', { spielerId: spielerId, pin: pin.trim() });
 
             if (res && res.success) {
+                // PIN korrekt -> Auth-Box ausblenden, Dashboard laden & anzeigen
                 document.getElementById('stats-auth-box').classList.add('hidden');
                 document.getElementById('looker-frame').src = LOOKER_EMBED_URL;
                 document.getElementById('dashboard-container').classList.remove('hidden');
@@ -133,3 +163,5 @@
     </script>
 </body>
 </html>
+
+
