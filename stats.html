@@ -111,16 +111,29 @@
             btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Prüfe...`;
             err.classList.add('hidden');
 
+            // 1. PIN verifizieren
             const res = await apiRequest('verifyPlayerPin', { spielerId: spielerId, pin: pin.trim() });
 
             if (res && res.success) {
-                document.getElementById('stats-auth-box').classList.add('hidden');
-                document.getElementById('looker-frame').src = LOOKER_EMBED_URL;
-                document.getElementById('dashboard-container').classList.remove('hidden');
+                // 2. Sperr-Status vom Server abfragen
+                const lockRes = await apiRequest('getVaultLockStatus');
                 
-                const badge = document.getElementById('user-badge');
-                badge.innerText = `Eingeloggt als Vault-Member`;
-                badge.classList.remove('hidden');
+                if (lockRes && lockRes.isUnlocked) {
+                    // FREIGEGEBEN -> Dashboard anzeigen
+                    document.getElementById('stats-auth-box').classList.add('hidden');
+                    document.getElementById('looker-frame').src = LOOKER_EMBED_URL;
+                    document.getElementById('dashboard-container').classList.remove('hidden');
+                    
+                    const badge = document.getElementById('user-badge');
+                    badge.innerText = `Eingeloggt als Vault-Member`;
+                    badge.classList.remove('hidden');
+                } else {
+                    // NOCH GESPERRT -> Hinweistext für die Jungs
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fas fa-key"></i> Vault Entriegeln`;
+                    err.innerText = "🔒 Die Auswertung ist noch unter Verschluss! Die Ergebnisse werden erst nach der Runde auf der Terrasse freigeschaltet. 🍻";
+                    err.classList.remove('hidden');
+                }
             } else {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fas fa-key"></i> Vault Entriegeln`;
