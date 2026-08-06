@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOCH IHN EIN - Stats & Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-stone-900 text-stone-100 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="p-4 border-b border-stone-800 flex justify-between items-center max-w-6xl mx-auto w-full">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="text-stone-400 hover:text-white transition"><i class="fas fa-arrow-left"></i> Startseite</a>
+            <span class="text-stone-700">|</span>
+            <h1 class="font-black text-amber-500 tracking-wider">LIE VAULT ANALYTICS</h1>
+        </div>
+        <div id="user-badge" class="text-xs font-semibold text-emerald-400 hidden"></div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 flex flex-col justify-center items-center">
+
+        <!-- 1. PIN-PROTECTION GATEWAY -->
+        <div id="stats-auth-box" class="max-w-md w-full bg-stone-800 border border-stone-700 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center text-xl mx-auto border border-amber-500/20">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h2 class="text-lg font-bold text-white">Mitglieder-Statistiken</h2>
+                <p class="text-xs text-stone-400">Authentifiziere dich mit deiner Scorecard-PIN, um den Vault zu öffnen.</p>
+            </div>
+
+            <div class="space-y-3 pt-2">
+                <div>
+                    <label class="text-[10px] font-bold text-stone-400 uppercase">Spieler wählen</label>
+                    <select id="stats-user-select" class="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2.5 text-xs text-stone-200 outline-none focus:border-amber-500">
+                        <option value="" disabled selected>Lade Spieler-Liste...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-stone-400 uppercase">PIN</label>
+                    <input type="password" id="stats-pin-input" inputmode="numeric" maxlength="6" placeholder="••••" class="w-full bg-stone-900 border border-stone-700 rounded-xl px-4 py-2.5 text-center text-lg font-bold text-white tracking-widest outline-none focus:border-amber-500">
+                </div>
+
+                <button onclick="unlockStats()" id="unlock-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold py-3 rounded-xl transition text-xs shadow-lg flex justify-center items-center gap-2">
+                    <i class="fas fa-key"></i> Vault Entriegeln
+                </button>
+                <p id="error-msg" class="text-red-400 text-xs text-center font-semibold hidden"></p>
+            </div>
+        </div>
+
+        <!-- 2. EMBEDDED DASHBOARD (Standardmäßig versteckt) -->
+        <div id="dashboard-container" class="w-full h-[85vh] bg-stone-900 rounded-2xl border border-stone-800 overflow-hidden shadow-2xl hidden">
+            <!-- HIER DEINE LOOKER STUDIO EMBED-URL EINFÜGEN -->
+            <iframe width="600" height="450" src="https://datastudio.google.com/embed/reporting/76fe5ed8-1a55-47cc-b2b8-7d41a47b5fd8/page/xFc5F" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-4 text-center text-stone-600 text-[10px] border-t border-stone-800">
+        &copy; LOCH IHN EIN &bull; Geschützter Mitgliederbereich
+    </footer>
+
+    <!-- LOGIK SKRIPT -->
+    <script>
+        // Deine bestehende GAS API-URL aus der App Config
+        const API_URL = "https://script.google.com/macros/s/AKfycbz-J5f6pzUF5xRN4CEDU1kNX6bbFf-y922-hTZLrjxiJ_QmgY4WYuSg0IabruTuhprh/exec";
+        
+        // DEINE LOOKER STUDIO EMBED-URL HIER EINTRAGEN:
+        const LOOKER_EMBED_URL = "https://lookerstudio.google.com/embed/reporting/DEINE_REPORT_ID/page/DEINE_SEITEN_ID";
+
+        // JSONP-Bridge für die Authentifizierung
+        function apiRequest(action, payload = {}) {
+            return new Promise((resolve) => {
+                const callbackName = "gas_cb_" + Math.random().toString(36).substring(2, 11);
+                window[callbackName] = function(data) {
+                    document.body.removeChild(script);
+                    delete window[callbackName];
+                    resolve(data);
+                };
+                const dataPayload = JSON.stringify({ action: action, ...payload });
+                const script = document.createElement("script");
+                script.src = `${API_URL}?callback=${callbackName}&data=${encodeURIComponent(dataPayload)}`;
+                document.body.appendChild(script);
+            });
+        }
+
+        // Spielerliste beim Laden abrufen
+        async function initStatsPage() {
+            const res = await apiRequest('getInitialAppData');
+            if (res && res.success && res.spieler) {
+                const select = document.getElementById('stats-user-select');
+                select.innerHTML = '<option value="" disabled selected>Namen auswählen...</option>' + 
+                    res.spieler.map(s => `<option value="${s.id}">${s.nickname} (${s.name})</option>`).join('');
+            }
+        }
+
+        // Entriegeln-Prozess
+        async function unlockStats() {
+            const spielerId = document.getElementById('stats-user-select').value;
+            const pin = document.getElementById('stats-pin-input').value;
+            const btn = document.getElementById('unlock-btn');
+            const err = document.getElementById('error-msg');
+
+            if (!spielerId || !pin) {
+                err.innerText = "Bitte wähle deinen Namen und gib deine PIN ein.";
+                err.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Prüfe...`;
+            err.classList.add('hidden');
+
+            const res = await apiRequest('verifyPlayerPin', { spielerId: spielerId, pin: pin.trim() });
+
+            if (res && res.success) {
+                // PIN korrekt -> Auth-Box ausblenden, Dashboard laden & anzeigen
+                document.getElementById('stats-auth-box').classList.add('hidden');
+                document.getElementById('looker-frame').src = LOOKER_EMBED_URL;
+                document.getElementById('dashboard-container').classList.remove('hidden');
+                
+                const badge = document.getElementById('user-badge');
+                badge.innerText = `Eingeloggt als Vault-Member`;
+                badge.classList.remove('hidden');
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-key"></i> Vault Entriegeln`;
+                err.innerText = res.error || "Falsche PIN!";
+                err.classList.remove('hidden');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", initStatsPage);
+    </script>
+</body>
+</html>
