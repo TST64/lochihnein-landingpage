@@ -38,13 +38,7 @@
             
             <!-- Rechte Navigation mit Stats & Login -->
             <div class="flex items-center gap-4">
-                <a href="stats.html" 
-                   class="inline-flex items-center gap-2 bg-golf-100 text-golf-900 hover:bg-golf-600 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 shadow-2xs">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Stats & Vault</span>
-                </a>
-
-                <a href="https://app.lochihnein.de" 
+<a href="https://app.lochihnein.de" 
                    class="text-sm font-medium text-stone-500 hover:text-golf-800 transition duration-200 flex items-center gap-1.5">
                    <span>Mitglieder-Login</span>
                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -141,8 +135,12 @@
                 <img src="LIE_Logo.png" alt="LOCH IHN EIN Logo" class="h-16 w-auto object-contain">
                 <span class="font-bold text-lg text-white">LOCH IHN EIN</span>
             </div>
-            <div class="flex items-center gap-6 text-sm text-golf-100/70">
+            <div class="flex flex-col sm:flex-row items-center gap-4 text-sm text-golf-100/70">
                 <p>&copy; <script>document.write(new Date().getFullYear())</script> LOCH IHN EIN.</p>
+                <nav class="flex items-center gap-4" aria-label="Rechtliche Hinweise">
+                    <a href="impressum.html" class="hover:text-white underline underline-offset-2 transition">Impressum</a>
+                    <a href="datenschutz.html" class="hover:text-white underline underline-offset-2 transition">Datenschutz</a>
+                </nav>
             </div>
         </div>
     </footer>
